@@ -1,0 +1,27 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  labels:
+    release: kube-prometheus
+  name: vso-prometheus.rules
+  namespace: observability
+spec:
+  groups:
+  - name: vso.rules
+    rules:
+    - alert: VSO-vault-auth
+      annotations:
+        description: Authentication to Vault has failed
+      expr: |-
+        controller_resource_status{controller="vaultauth"} == 0
+      for: 1m
+      labels:
+        severity: critical
+    - alert: VSO-vault-connection
+      annotations:
+        description: Connection to Vault has failed
+      expr: |-
+        controller_resource_status{controller="vaultconnection"} == 0
+      for: 1m
+      labels:
+        severity: critical
